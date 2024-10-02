@@ -15,6 +15,7 @@ Navigate to the `securityOps` folder (the Laravel folder) and run the following 
 4. Seed the database: `php artisan db:seed`
 5. Generate the encryption key: `php artisan key:generate`
 6. Start the server: `php artisan serve`
+optional: `php artisan test`
 
 ## Client Setup (Frontend)
 Navigate to the `securityFront` folder (the client folder) and run the following commands:
@@ -25,6 +26,8 @@ Navigate to the `securityFront` folder (the client folder) and run the following
 4. Use the following credentials to log in:
    - **Email:** `test@example.com`
    - **Password:** `password`
+optional: `npm run cy:open` to run the Cypress tests
+
 
 ### Note:
 The provided `.env.example` file contains most of the required configurations, allowing you to set up the system quickly and easily.
