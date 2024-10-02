@@ -3,12 +3,18 @@
         <div v-if="authStore.user">
             <div class="bg-slate-800 shadow-md rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-4">Vulnerabilities</h2>
-
-                <div class="flex space-x-4 mb-6">
-                    <UButton @click="fetchVulnerabilities" color="blue" variant="solid">Refresh List</UButton>
-                    <UButton @click="openCreateModal" variant="solid">Create New Vulnerability</UButton>
-                    <UButton square label="Logout" color="gray" variant="solid" @click="authStore.logout" />
+                <!-- Display user email and Gravatar -->
+                <div class="flex items-center space-x-4 mb-4">
+                    <img :src="gravatarUrl" alt="User Gravatar" class="w-12 h-12 rounded-full" />
+                    <span class="text-white">{{ authStore.user.email }}</span>
                 </div>
+
+                <div class="flex flex-col space-y-4 mb-6 sm:flex-row sm:space-y-0 sm:space-x-4">
+                    <UButton @click="fetchVulnerabilities" color="blue" variant="solid" class="w-full sm:w-auto">Refresh List</UButton>
+                    <UButton @click="openCreateModal" variant="solid" class="w-full sm:w-auto">Create New Vulnerability</UButton>
+                    <UButton square label="Logout" color="gray" variant="solid" @click="authStore.logout" class="w-full sm:w-auto" />
+                </div>
+
 
                 <ul class="space-y-4">
                     <li v-for="vuln in vulnerabilities" :key="vuln.id" class="">
@@ -112,6 +118,13 @@ import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useVulnerabilityStore } from '~/stores/vulnerabilities'
 import { useRouter } from 'vue-router'
+import md5 from 'crypto-js/md5'
+
+// Compute the Gravatar URL based on the user's email
+const gravatarUrl = computed(() => {
+    const emailHash = md5(authStore.user.email.trim().toLowerCase()).toString()
+    return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`
+})
 
 const authStore = useAuthStore()
 const vulnerabilityStore = useVulnerabilityStore()
