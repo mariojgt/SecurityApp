@@ -6,12 +6,12 @@
 
                 <div class="flex space-x-4 mb-6">
                     <UButton @click="fetchVulnerabilities" color="blue" variant="solid">Refresh List</UButton>
-                    <UButton @click="createVulnerability" variant="solid">Create New Vulnerability</UButton>
+                    <UButton @click="openCreateModal" variant="solid">Create New Vulnerability</UButton>
                     <UButton square label="Logout" color="gray" variant="solid" @click="authStore.logout" />
                 </div>
 
                 <ul class="space-y-4">
-                    <li v-for="vuln in vulnerabilities.data" :key="vuln.id" class="">
+                    <li v-for="vuln in vulnerabilities" :key="vuln.id" class="">
                         <UCard>
                             <template #header>
                                 <h3>{{ vuln.title }}</h3>
@@ -28,6 +28,29 @@
                         </UCard>
                     </li>
                 </ul>
+
+                <!-- Pagination Controls -->
+                <div class="flex justify-center items-center mt-4 space-x-2">
+                    <UButton
+                        :disabled="pagination.current_page === 1"
+                        @click="fetchVulnerabilities(pagination.current_page - 1)"
+                        color="gray"
+                        variant="outline"
+                    >
+                        Previous
+                    </UButton>
+
+                    <span class="text-white">Page {{ pagination.current_page }} of {{ pagination.last_page }}</span>
+
+                    <UButton
+                        :disabled="pagination.current_page === pagination.last_page"
+                        @click="fetchVulnerabilities(pagination.current_page + 1)"
+                        color="gray"
+                        variant="outline"
+                    >
+                        Next
+                    </UButton>
+                </div>
             </div>
         </div>
 
@@ -35,6 +58,23 @@
             <p class="text-lg mb-4">You need to log in to view this page.</p>
             <UButton @click="goToLogin" color="green" variant="solid">Go to Login</UButton>
         </div>
+
+        <!-- Create Vulnerability Modal -->
+        <UModal v-model="isCreateModalOpen">
+            <div class="p-4">
+                <h3 class="text-lg mb-4">Create New Vulnerability</h3>
+                <div class="mb-4">
+                    <UInput v-model="newTitle" color="primary" variant="outline" placeholder="Title" />
+                </div>
+                <div class="mb-4">
+                    <UInput v-model="newDescription" color="primary" variant="outline" placeholder="Description" />
+                </div>
+                <div class="flex justify-end space-x-4 mt-4">
+                    <UButton @click="closeCreateModal" variant="secondary">Cancel</UButton>
+                    <UButton @click="confirmCreateVulnerability" color="green" variant="solid">Create</UButton>
+                </div>
+            </div>
+        </UModal>
 
         <!-- Delete Confirmation Modal -->
         <UModal v-model="isDeleteModalOpen">
@@ -78,26 +118,42 @@ const vulnerabilityStore = useVulnerabilityStore()
 const router = useRouter()
 
 const vulnerabilities = computed(() => vulnerabilityStore.vulnerabilities)
+const pagination = computed(() => vulnerabilityStore.pagination)
 
+const isCreateModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
 const isEditModalOpen = ref(false)
+
 const selectedVulnerabilityId = ref<number | null>(null)
 const editTitle = ref('')
 const editDescription = ref('')
+const newTitle = ref('')
+const newDescription = ref('')
 
-const fetchVulnerabilities = async () => {
-    await vulnerabilityStore.fetchVulnerabilities()
+const fetchVulnerabilities = async (page = 1) => {
+    await vulnerabilityStore.fetchVulnerabilities(page)
 }
 
-const createVulnerability = async () => {
-    const title = prompt('Enter vulnerability title')
-    const description = prompt('Enter vulnerability description')
-    if (title && description) {
-        await vulnerabilityStore.addVulnerability({ title, description })
+// Open and close the create vulnerability modal
+const openCreateModal = () => {
+    isCreateModalOpen.value = true
+}
+
+const closeCreateModal = () => {
+    isCreateModalOpen.value = false
+    newTitle.value = ''
+    newDescription.value = ''
+}
+
+const confirmCreateVulnerability = async () => {
+    if (newTitle.value && newDescription.value) {
+        await vulnerabilityStore.addVulnerability({ title: newTitle.value, description: newDescription.value })
         fetchVulnerabilities()
     }
+    closeCreateModal()
 }
 
+// Open and close the edit vulnerability modal
 const openEditModal = (vulnerability: { id: number, title: string, description: string }) => {
     selectedVulnerabilityId.value = vulnerability.id
     editTitle.value = vulnerability.title
@@ -123,6 +179,7 @@ const confirmEditVulnerability = async () => {
     closeEditModal()
 }
 
+// Open and close the delete vulnerability modal
 const openDeleteModal = (id: number) => {
     selectedVulnerabilityId.value = id
     isDeleteModalOpen.value = true

@@ -1,5 +1,14 @@
 # Setup Process
 
+# Tools you need to have installed
+- Docker
+- Docker Compose
+- Composer
+- Node.js
+- NPM
+- Php
+- Postman
+
 ## MySQL Setup
 Navigate to the `mysql` folder and run the following commands:
 
@@ -31,3 +40,5 @@ optional: `npm run cy:open` to run the Cypress tests
 
 ### Note:
 The provided `.env.example` file contains most of the required configurations, allowing you to set up the system quickly and easily.
+
+optional: There is a postman collection in the root folder that you can use to test the API endpoints.

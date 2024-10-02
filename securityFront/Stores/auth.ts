@@ -19,12 +19,12 @@ export const useAuthStore = defineStore("auth", {
                     throw new Error("Invalid login credentials");
                 }
 
-                this.token = data.value.token;
-                this.user = data.value.user;
+                this.token = (data.value as { token: string; user: object }).token;
+                this.user = (data.value as { token: string; user: object }).user;
 
                 useCookie("auth_token").value = this.token;
             } catch (error) {
-                this.logout();
+                this.$reset();
                 throw new Error("Invalid login credentials");
             }
         },
@@ -32,7 +32,7 @@ export const useAuthStore = defineStore("auth", {
         async signup({ name, email, password }: { name: string; email: string; password: string }) {
             const config = useRuntimeConfig();
             try {
-                const { data, error } = await useFetch(`${config.public.apiBaseUrl}/api/signup`, {
+                const { data, error } = await useFetch<{ token: string; user: object }>(`${config.public.apiBaseUrl}/api/signup`, {
                     method: "POST",
                     body: {
                         name,
@@ -46,12 +46,20 @@ export const useAuthStore = defineStore("auth", {
                     throw new Error("Signup failed");
                 }
 
-                this.token = data.value.token;
-                this.user = data.value.user;
+                if (data.value) {
+                    this.token = data.value.token;
+                    this.user = data.value.user;
+                } else {
+                    throw new Error("Signup failed");
+                }
 
                 useCookie("auth_token").value = this.token;
             } catch (error) {
-                this.logout();
+                this.$patch((state) => {
+                    state.token = null;
+                    state.user = null;
+                });
+                useCookie("auth_token").value = null;
                 throw new Error("Signup failed. Please check your details.");
             }
         },
