@@ -12,7 +12,6 @@ class VulnerabilitiesController extends Controller
      */
     public function index()
     {
-        // Retrieve and return all vulnerabilities as JSON
         return Vulnerability::paginate(10);
     }
 
@@ -21,7 +20,6 @@ class VulnerabilitiesController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate and store the new vulnerability
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
@@ -40,7 +38,6 @@ class VulnerabilitiesController extends Controller
      */
     public function show(Vulnerability $vulnerability)
     {
-        // Return the specific vulnerability as JSON
         return response()->json($vulnerability, 200);
     }
 
@@ -49,7 +46,6 @@ class VulnerabilitiesController extends Controller
      */
     public function update(Request $request, Vulnerability $vulnerability)
     {
-        // Validate and update the vulnerability
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
@@ -68,7 +64,6 @@ class VulnerabilitiesController extends Controller
      */
     public function destroy(Vulnerability $vulnerability)
     {
-        // Delete the vulnerability
         $vulnerability->delete();
 
         return response()->json([
