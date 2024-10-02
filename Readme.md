@@ -29,7 +29,7 @@ optional: `php artisan test`
 ## Client Setup (Frontend)
 Navigate to the `securityFront` folder (the client folder) and run the following commands:
 
-1. Install dependencies: `npm install`
+1. Install dependencies: `npm install` or `bun install` is 10x faster :)
 2. Start the development server: `npm run dev`
 3. Configure the `.env` file.
 4. Use the following credentials to log in:
