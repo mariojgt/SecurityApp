@@ -35,7 +35,7 @@ Navigate to the `securityFront` folder (the client folder) and run the following
 4. Use the following credentials to log in:
    - **Email:** `test@example.com`
    - **Password:** `password`
-optional: `npm run cy:open` to run the Cypress tests
+optional: `npm run cy:open` to run the Cypress tests the port is hard coded so you may need to update the cypress config file with the right port.
 
 
 ### Note:
