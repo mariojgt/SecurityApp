@@ -7,17 +7,13 @@ use Illuminate\Http\Request;
 
 class VulnerabilitiesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         return Vulnerability::paginate(10);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -33,17 +29,11 @@ class VulnerabilitiesController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Vulnerability $vulnerability)
     {
         return response()->json($vulnerability, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Vulnerability $vulnerability)
     {
         $validatedData = $request->validate([
@@ -59,9 +49,6 @@ class VulnerabilitiesController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Vulnerability $vulnerability)
     {
         $vulnerability->delete();
